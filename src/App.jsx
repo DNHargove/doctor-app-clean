@@ -2,8 +2,7 @@ import { Mic, Play, UploadCloud, Image as ImageIcon } from "lucide-react";
 import { useState, useRef } from "react";
 
 const PROFESSIONAL_FONT = "'Inter', 'Segoe UI', 'Nunito', Arial, sans-serif";
-
-const DOCTOR_STYLE = "avatar"; // Use "avatar" for cartoon doc, "orb" for animated orb
+const DOCTOR_AVATAR = "https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=300";
 
 const SUGGESTIONS = [
   "What should I do next?",
@@ -13,34 +12,14 @@ const SUGGESTIONS = [
   "Can you show me what this usually looks like?",
 ];
 
-function AnimatedOrb({ active, label }) {
-  return (
-    <div className="flex flex-col items-center mb-4">
-      <div
-        className={`rounded-full bg-gradient-to-tr from-emerald-400 to-green-300 shadow-lg transition-all duration-300 ${
-          active ? "animate-pulse scale-105" : "opacity-80"
-        }`}
-        style={{
-          width: 54,
-          height: 54,
-          boxShadow: "0 0 0 7px rgba(16, 185, 129, 0.08)",
-          border: "3px solid #fff",
-        }}
-      />
-      <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>
-        {active ? label : ""}
-      </span>
-    </div>
-  );
-}
-
 function DoctorAvatar({ active }) {
   return (
-    <div className="flex flex-col items-center mb-4">
+    <div className="flex flex-col items-center mb-2 mt-2">
       <img
-        src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=300"
+        src={DOCTOR_AVATAR}
         alt="Doctor avatar"
-        className={`w-14 h-14 rounded-full border-2 border-white shadow-lg bg-white object-cover transition-all duration-300 ${active ? "ring-2 ring-green-300 scale-105" : ""}`}
+        className={`w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-white shadow bg-white object-cover transition-all duration-300 ${active ? "ring-2 ring-emerald-300 scale-105" : ""}`}
+        style={{ marginBottom: 4 }}
       />
       <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>
         {active ? "Listening..." : ""}
@@ -185,8 +164,6 @@ export default function DoctorAppDemo() {
       style={{ fontFamily: PROFESSIONAL_FONT, backgroundAttachment: "fixed" }}
     >
       <main className="max-w-xl mx-auto w-full flex flex-col flex-1 justify-between pt-5">
-        {/* TEST DIV */}
-        <div style={{color: "red", fontSize: "2rem", fontWeight: "bold"}}>TEST</div>
         {/* Header */}
         <div className="flex flex-col items-center mb-2 mt-2">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center text-emerald-800 drop-shadow mb-2">
@@ -197,13 +174,9 @@ export default function DoctorAppDemo() {
           </p>
         </div>
 
-        {/* Doctor: avatar or orb */}
+        {/* Doctor avatar */}
         <div className="flex justify-center mb-2">
-          {DOCTOR_STYLE === "orb" ? (
-            <AnimatedOrb active={listening || loading} label={listening ? "Listening..." : loading ? "Doctor is thinking..." : ""} />
-          ) : (
-            <DoctorAvatar active={listening || loading} />
-          )}
+          <DoctorAvatar active={listening || loading} />
         </div>
 
         {/* Speak button */}
