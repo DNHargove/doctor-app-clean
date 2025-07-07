@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 
 const PROFESSIONAL_FONT = "'Inter', 'Segoe UI', 'Nunito', Arial, sans-serif";
 
-const DOCTOR_STYLE = "avatar"; // Change to "orb" if you want the orb instead
+const DOCTOR_STYLE = "avatar"; // Use "avatar" for cartoon doc, "orb" for animated orb
 
 const SUGGESTIONS = [
   "What should I do next?",
@@ -41,7 +41,6 @@ function DoctorAvatar({ active }) {
         src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=300"
         alt="Doctor avatar"
         className={`w-14 h-14 rounded-full border-2 border-white shadow-lg bg-white object-cover transition-all duration-300 ${active ? "ring-2 ring-green-300 scale-105" : ""}`}
-        style={{}}
       />
       <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>
         {active ? "Listening..." : ""}
@@ -186,6 +185,8 @@ export default function DoctorAppDemo() {
       style={{ fontFamily: PROFESSIONAL_FONT, backgroundAttachment: "fixed" }}
     >
       <main className="max-w-xl mx-auto w-full flex flex-col flex-1 justify-between pt-5">
+        {/* TEST DIV */}
+        <div style={{color: "red", fontSize: "2rem", fontWeight: "bold"}}>TEST</div>
         {/* Header */}
         <div className="flex flex-col items-center mb-2 mt-2">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center text-emerald-800 drop-shadow mb-2">
