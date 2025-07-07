@@ -1,16 +1,17 @@
 import { Mic, Play, UploadCloud, Image as ImageIcon } from "lucide-react";
 import { useState, useRef } from "react";
 
+// TOGGLE THIS TO 'orb' or 'avatar'
+const DOCTOR_STYLE = "avatar"; // or "orb"
+
 const Card = ({ children, className }) => (
-  <div className={`bg-white/80 backdrop-blur-md rounded-xl shadow-lg border border-gray-200 ${className}`}>{children}</div>
+  <div className={`bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-teal-200 ${className}`}>{children}</div>
 );
-const CardContent = ({ children, className }) => (
-  <div className={className}>{children}</div>
-);
+
 const Button = ({ children, onClick, className }) => (
   <button
     onClick={onClick}
-    className={`bg-teal-600 hover:bg-teal-700 text-white font-semibold py-4 px-8 text-xl rounded-full transition shadow-md ${className}`}
+    className={`bg-teal-600 hover:bg-teal-700 text-white font-semibold py-5 px-10 text-2xl rounded-full transition shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 ${className}`}
   >
     {children}
   </button>
@@ -20,11 +21,33 @@ function AnimatedOrb({ active, label }) {
   return (
     <div className="flex flex-col items-center mb-4">
       <div
-        className={`rounded-full bg-gradient-to-tr from-teal-400 to-blue-400 shadow-lg transition-all duration-300
-          ${active ? "animate-pulse scale-110" : "opacity-60"}`}
-        style={{ width: 70, height: 70 }}
+        className={`rounded-full bg-gradient-to-tr from-teal-400 to-blue-400 shadow-lg transition-all duration-300 ${
+          active ? "animate-pulse scale-110" : "opacity-70"
+        }`}
+        style={{
+          width: 100,
+          height: 100,
+          boxShadow: "0 0 0 10px rgba(13, 148, 136, 0.08)",
+          border: "4px solid #fff",
+        }}
       />
-      <span className="text-sm text-teal-700 mt-2">{active ? label : ""}</span>
+      <span className="text-base text-teal-800 mt-2 font-medium">{active ? label : ""}</span>
+    </div>
+  );
+}
+
+function DoctorAvatar({ active }) {
+  return (
+    <div className="flex flex-col items-center mb-4">
+      <img
+        src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=300"
+        alt="Doctor avatar"
+        className={`w-32 h-32 rounded-full border-4 border-white shadow-lg bg-white object-cover transition-all duration-300 ${active ? "ring-4 ring-blue-300 scale-105" : ""}`}
+        style={{}}
+      />
+      <span className="text-base text-teal-800 mt-2 font-medium">
+        {active ? "Listening..." : ""}
+      </span>
     </div>
   );
 }
@@ -122,7 +145,7 @@ export default function DoctorAppDemo() {
       return;
     }
 
-    const recognition = new webkitSpeechRecognition();
+    const recognition = new window.webkitSpeechRecognition();
     recognitionRef.current = recognition;
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -169,71 +192,87 @@ export default function DoctorAppDemo() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-teal-100 to-blue-200 p-4 sm:p-6 relative overflow-hidden">
-      <div className="max-w-2xl mx-auto">
-
-        {/* Doctor avatar */}
-        <div className="flex justify-center mb-4">
-          <img
-            src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=200"
-            alt="Doctor avatar"
-            className="w-28 h-28 rounded-full border-4 border-white shadow-lg bg-white object-cover"
-          />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-teal-100 to-blue-200 p-4 sm:p-6 flex flex-col justify-between">
+      <main className="max-w-2xl mx-auto w-full flex flex-col justify-between flex-1">
+        {/* Header */}
+        <div className="flex flex-col items-center mb-2 mt-2">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center text-teal-800 drop-shadow mb-2">
+            Ask the Doctor
+          </h1>
+          <p className="text-lg text-center text-teal-700 mb-2 font-medium">
+            Your friendly AI medical advice, 24/7
+          </p>
         </div>
-        {/* Animated orb */}
-        <AnimatedOrb active={listening || loading} label={listening ? "Listening..." : loading ? "Doctor is thinking..." : ""} />
 
-        {/* Headline and tagline */}
-        <h1 className="text-5xl font-bold mb-2 text-center text-teal-800 drop-shadow">Talk to the Doctor Now!</h1>
-        <p className="text-lg text-center text-teal-700 mb-6 font-medium">Your private, friendly AI medical consultation starts here.</p>
+        {/* Doctor: avatar or orb */}
+        <div className="flex justify-center mb-4">
+          {DOCTOR_STYLE === "orb" ? (
+            <AnimatedOrb active={listening || loading} label={listening ? "Listening..." : loading ? "Doctor is thinking..." : ""} />
+          ) : (
+            <DoctorAvatar active={listening || loading} />
+          )}
+        </div>
 
+        {/* Speak button */}
         <div className="text-center my-6">
           <Button onClick={handleVoiceInput} className="text-3xl py-6 px-12">
-            <Mic className="inline-block mr-2 w-6 h-6" /> Speak
+            <Mic className="inline-block mr-2 w-7 h-7" /> Speak
           </Button>
         </div>
 
         {transcript && <p className="text-gray-800 text-center mb-2 italic">You said: "{transcript}"</p>}
 
+        {/* Doctor chat bubble */}
         {responseReady && (
-          <Card className="p-6 my-6">
-            <CardContent>
-              <p className="text-gray-800 whitespace-pre-line">{response}</p>
-            </CardContent>
-            <div className="text-right mt-4">
-              <Button onClick={replayResponse} className="bg-indigo-500 hover:bg-indigo-600">
-                <Play className="inline-block mr-2" /> Replay
-              </Button>
-            </div>
-            {/* Smart Suggestions */}
-            <div className="mt-6 flex flex-wrap gap-2">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  className="bg-teal-100 hover:bg-teal-200 text-teal-900 rounded-full px-4 py-2 text-sm transition border border-teal-200"
-                  onClick={() => handleSuggestionClick(s)}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </Card>
+          <div className="flex justify-start mt-2">
+            <Card className="p-6 max-w-xl w-full rounded-3xl">
+              <div className="flex flex-col items-start">
+                <span className="text-teal-600 font-bold mb-1">Doctor:</span>
+                <p className="text-gray-900 whitespace-pre-line text-lg">{response}</p>
+                <div className="flex items-center mt-3 w-full">
+                  <Button onClick={replayResponse} className="bg-indigo-500 hover:bg-indigo-600 text-base py-2 px-6">
+                    <Play className="inline-block mr-2" /> Replay
+                  </Button>
+                  {/* Suggestions */}
+                  <div className="ml-auto flex gap-2 flex-wrap">
+                    {SUGGESTIONS.map((s) => (
+                      <button
+                        key={s}
+                        className="bg-teal-100 hover:bg-teal-200 text-teal-900 rounded-full px-4 py-2 text-xs transition border border-teal-200"
+                        onClick={() => handleSuggestionClick(s)}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
         )}
 
-        <div className="mt-8 text-center">
+        {/* Upload */}
+        <div className="mt-10 text-center">
           <label htmlFor="imageUpload" className="cursor-pointer inline-block text-sm text-teal-700 hover:underline">
             <UploadCloud className="inline-block mr-2" /> Upload an image of your symptom
           </label>
           <input id="imageUpload" type="file" onChange={handleImageUpload} className="hidden" />
         </div>
-
         {uploadedImage && (
           <div className="mt-4 text-center">
             <ImageIcon className="inline-block mr-2" />
             <img src={uploadedImage} alt="Uploaded" className="max-w-xs mx-auto rounded-lg shadow" />
           </div>
         )}
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="text-center mt-10 text-gray-600 text-sm opacity-80">
+        <div className="mb-2">
+          <span>Private, secure &mdash; No personal data stored</span>
+        </div>
+        <div>Built with <span className="text-teal-600 font-semibold">OpenAI</span> • For demonstration only, not a substitute for medical advice.</div>
+      </footer>
     </div>
   );
 }
