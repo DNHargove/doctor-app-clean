@@ -1,26 +1,17 @@
 import { Mic, Play, UploadCloud, Image as ImageIcon } from "lucide-react";
 import { useState, useRef } from "react";
 
-// TOGGLE THIS TO 'orb' or 'avatar'
-const DOCTOR_STYLE = "avatar"; // or "orb"
-
 const PROFESSIONAL_FONT = "'Inter', 'Segoe UI', 'Nunito', Arial, sans-serif";
 
-const Card = ({ children, className }) => (
-  <div className={`bg-green-50/80 rounded-3xl shadow-xl border border-green-200 ${className}`} style={{ fontFamily: PROFESSIONAL_FONT }}>
-    {children}
-  </div>
-);
+const DOCTOR_STYLE = "avatar"; // Change to "orb" if you want the orb instead
 
-const Button = ({ children, onClick, className }) => (
-  <button
-    onClick={onClick}
-    className={`bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-8 px-16 text-4xl rounded-full transition shadow-2xl focus:outline-none focus:ring-4 focus:ring-emerald-400 ${className}`}
-    style={{ fontFamily: PROFESSIONAL_FONT, letterSpacing: "0.02em" }}
-  >
-    {children}
-  </button>
-);
+const SUGGESTIONS = [
+  "What should I do next?",
+  "Should I see a doctor in person?",
+  "Is this contagious?",
+  "How can I relieve symptoms at home?",
+  "Can you show me what this usually looks like?",
+];
 
 function AnimatedOrb({ active, label }) {
   return (
@@ -30,13 +21,15 @@ function AnimatedOrb({ active, label }) {
           active ? "animate-pulse scale-105" : "opacity-80"
         }`}
         style={{
-          width: 70,
-          height: 70,
+          width: 54,
+          height: 54,
           boxShadow: "0 0 0 7px rgba(16, 185, 129, 0.08)",
           border: "3px solid #fff",
         }}
       />
-      <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>{active ? label : ""}</span>
+      <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>
+        {active ? label : ""}
+      </span>
     </div>
   );
 }
@@ -47,7 +40,7 @@ function DoctorAvatar({ active }) {
       <img
         src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=300"
         alt="Doctor avatar"
-        className={`w-20 h-20 rounded-full border-2 border-white shadow-lg bg-white object-cover transition-all duration-300 ${active ? "ring-2 ring-green-300 scale-105" : ""}`}
+        className={`w-14 h-14 rounded-full border-2 border-white shadow-lg bg-white object-cover transition-all duration-300 ${active ? "ring-2 ring-green-300 scale-105" : ""}`}
         style={{}}
       />
       <span className="text-base text-emerald-900 mt-1 font-medium" style={{ fontFamily: PROFESSIONAL_FONT }}>
@@ -56,14 +49,6 @@ function DoctorAvatar({ active }) {
     </div>
   );
 }
-
-const SUGGESTIONS = [
-  "What should I do next?",
-  "Should I see a doctor in person?",
-  "Is this contagious?",
-  "How can I relieve symptoms at home?",
-  "Can you show me what this usually looks like?",
-];
 
 export default function DoctorAppDemo() {
   const [listening, setListening] = useState(false);
@@ -79,7 +64,6 @@ export default function DoctorAppDemo() {
         "You are a helpful, empathetic virtual doctor. Do not reference images. Keep your answers friendly, clear, and supportive. Always ask a follow-up question to better understand the user's symptoms.",
     },
   ]);
-
   const recognitionRef = useRef(null);
 
   const fetchChatGPTResponse = async (prompt) => {
@@ -198,10 +182,10 @@ export default function DoctorAppDemo() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-emerald-100 p-4 sm:p-6 flex flex-col justify-between"
+      className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-emerald-100 flex flex-col justify-between"
       style={{ fontFamily: PROFESSIONAL_FONT, backgroundAttachment: "fixed" }}
     >
-      <main className="max-w-2xl mx-auto w-full flex flex-col justify-between flex-1">
+      <main className="max-w-xl mx-auto w-full flex flex-col flex-1 justify-between pt-5">
         {/* Header */}
         <div className="flex flex-col items-center mb-2 mt-2">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center text-emerald-800 drop-shadow mb-2">
@@ -222,10 +206,18 @@ export default function DoctorAppDemo() {
         </div>
 
         {/* Speak button */}
-        <div className="text-center my-7">
-          <Button onClick={handleVoiceInput} className="text-4xl py-8 px-20">
-            <Mic className="inline-block mr-3 w-10 h-10" /> Speak
-          </Button>
+        <div className="text-center my-8">
+          <button
+            onClick={handleVoiceInput}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-8 px-24 text-4xl rounded-full shadow-2xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-400"
+            style={{
+              fontFamily: PROFESSIONAL_FONT,
+              letterSpacing: "0.02em",
+              boxShadow: "0 3px 18px 0 #35d9a750",
+            }}
+          >
+            <Mic className="inline-block mr-4 w-12 h-12" /> Speak
+          </button>
         </div>
 
         {transcript && <p className="text-emerald-900 text-center mb-2 italic">{`You said: "${transcript}"`}</p>}
@@ -233,16 +225,20 @@ export default function DoctorAppDemo() {
         {/* Doctor chat bubble */}
         {responseReady && (
           <div className="flex justify-start mt-2">
-            <Card className="p-8 max-w-xl w-full rounded-[2.2rem] shadow-2xl bg-white/95 border-2 border-emerald-200">
+            <div className="p-8 max-w-xl w-full rounded-[2.2rem] shadow-2xl bg-white/95 border-2 border-emerald-200">
               <div className="flex flex-col items-start">
                 <span className="text-emerald-600 font-bold mb-2 text-lg">Doctor:</span>
                 <p className="text-gray-900 whitespace-pre-line text-lg" style={{ fontFamily: PROFESSIONAL_FONT }}>
                   {response}
                 </p>
                 <div className="flex items-center mt-3 w-full">
-                  <Button onClick={replayResponse} className="bg-emerald-500 hover:bg-emerald-600 text-base py-2 px-6 text-xl shadow">
+                  <button
+                    onClick={replayResponse}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-base py-2 px-6 text-xl shadow rounded-full mr-2"
+                    style={{ fontFamily: PROFESSIONAL_FONT }}
+                  >
                     <Play className="inline-block mr-2" /> Replay
-                  </Button>
+                  </button>
                   <div className="ml-auto flex gap-2 flex-wrap">
                     {SUGGESTIONS.map((s) => (
                       <button
@@ -257,7 +253,7 @@ export default function DoctorAppDemo() {
                   </div>
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
